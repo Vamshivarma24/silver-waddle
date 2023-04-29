@@ -1,0 +1,82 @@
+from numpy.core.fromnumeric import size
+from numpy.lib.type_check import imag
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from array import array
+from PIL import Image
+from PIL import Image, ImageChops
+#from daa import Dadda_Accurate
+import cv2
+def fun(a):
+  print(len(a))
+  x=[]
+  c=0
+  for i in range(225):
+    x1=[]
+    for j in range(225):
+      x1.append(a[c])
+      c+=1
+    x.append(x1)
+  return x
+imk = Image.open(r"/home/im2.jpg")
+
+imk2=Image.open(r"/home/im1.jpg")
+imk.convert("L").save("r1.jpg")
+imk2.convert("L").save("r2.jpg")
+ix = Image.open(r"r1.jpg")
+ix2=Image.open(r"r2.jpg")
+
+#newsize = (256,256)
+#imk1 = ix.resize(newsize)
+#imk21=ix2.resize(newsize)
+#ix.resize(newsize).save("u1.jpg")
+#ix2.resize(newsize).save("u2.jpg")
+test = Image.open('r1.jpg', 'r')
+px1 = list(test.getdata())
+x11=fun(px1)
+test2=Image.open('r2.jpg','r')
+px2=list(test2.getdata())
+y11=fun(px2)
+z=[]
+w=0
+for i in range(0,len(x11)):
+  tr=[]
+  for j in range(len(y11)):
+    decnum=x11[i][j]
+    x=(bin(decnum)[2:])
+    t=[]
+    t = [int(c) for c in str(x)]
+    x1=t[:8]
+    decnum=y11[i][j]
+    y=(bin(decnum)[2:])
+    h=[]
+    h= [int(d) for d in str(y)]
+    y1=h[:8]
+    #print(x1,y1)
+    if len(x1)<8 :
+      for i in range(len(x1),8):
+        x1.insert(0,0)
+    if len(y1)<8 :
+      for i in range(len(y1),8):
+        y1.insert(0,0)  
+    tmp=(Dadda_Accurate(x1[7],x1[6],x1[5],x1[4],x1[3],x1[2],x1[1],x1[0],y1[0],y1[1],y1[2],y1[3],y1[4],y1[5],y1[6],y1[7]))
+
+    ##print(tmp)
+    tr.append(tmp%225)
+  z.append(tr) 
+#print(z)
+w+=1
+res=np.asarray(z)
+print(res,len(res))      
+im = Image.fromarray((res * 255).astype(np.uint8))
+#img=(Image.fromarray(res))
+print(type(im),size(im))
+im.save("/home/im5.jpg")
+rgb_im = im.convert('RGB')
+rgb_im.save('colors.jpg')
+im.show()
+#img=Image.open(r"/home/im1.jpg")
+#img1=Image.open(r"/home/im2.jpg")
+#img3=ImageChops.multiply(ix,ix2)
+#img3.show()
